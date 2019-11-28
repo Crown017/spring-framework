@@ -268,27 +268,65 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 	 * but rather leaves this up to the caller.
 	 * @param basePackages the packages to check for annotated classes
 	 * @return set of beans registered if any for tooling registration purposes (never {@code null})
+	 *
+	 *
+	 *
+	 *
 	 */
 	protected Set<BeanDefinitionHolder> doScan(String... basePackages) {
 		Assert.notEmpty(basePackages, "At least one base package must be specified");
+
+		/**
+		 * 构造一个容器用来存放BeanDefinition
+		 */
 		Set<BeanDefinitionHolder> beanDefinitions = new LinkedHashSet<>();
 		for (String basePackage : basePackages) {
+
+			/**
+			 * 扫包的细节实现
+			 */
 			Set<BeanDefinition> candidates = findCandidateComponents(basePackage);
 			for (BeanDefinition candidate : candidates) {
+				/**
+				 * 解析作用域
+				 */
 				ScopeMetadata scopeMetadata = this.scopeMetadataResolver.resolveScopeMetadata(candidate);
+
+				/**
+				 * 设置作用域
+				 */
 				candidate.setScope(scopeMetadata.getScopeName());
+
+				/**
+				 * 获取Bean的名称
+				 */
 				String beanName = this.beanNameGenerator.generateBeanName(candidate, this.registry);
+
+				/**
+				 * 是不是Spring注解的Bean 不是的化为Bean设置默认值
+				 */
 				if (candidate instanceof AbstractBeanDefinition) {
 					postProcessBeanDefinition((AbstractBeanDefinition) candidate, beanName);
 				}
+
+
 				if (candidate instanceof AnnotatedBeanDefinition) {
 					AnnotationConfigUtils.processCommonDefinitionAnnotations((AnnotatedBeanDefinition) candidate);
 				}
+
+
+				/**
+				 * 根据Bean名称检查指定的Bean是否需要在容器中注册，或者在容器中冲突
+				 */
 				if (checkCandidate(beanName, candidate)) {
 					BeanDefinitionHolder definitionHolder = new BeanDefinitionHolder(candidate, beanName);
 					definitionHolder =
 							AnnotationConfigUtils.applyScopedProxyMode(scopeMetadata, definitionHolder, this.registry);
 					beanDefinitions.add(definitionHolder);
+
+					/**
+					 * 注册Bean
+					 */
 					registerBeanDefinition(definitionHolder, this.registry);
 				}
 			}

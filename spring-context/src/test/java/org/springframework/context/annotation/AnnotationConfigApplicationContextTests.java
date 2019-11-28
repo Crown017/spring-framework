@@ -84,7 +84,9 @@ public class AnnotationConfigApplicationContextTests {
 
 	@Test
 	public void getBeanByType() {
+		//创建注解的上下文对象
 		ApplicationContext context = new AnnotationConfigApplicationContext(Config.class);
+		//
 		TestBean testBean = context.getBean(TestBean.class);
 		assertThat(testBean).isNotNull();
 		assertThat(testBean.name).isEqualTo("foo");

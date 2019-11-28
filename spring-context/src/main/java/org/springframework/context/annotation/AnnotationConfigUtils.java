@@ -236,6 +236,10 @@ public abstract class AnnotationConfigUtils {
 
 	static void processCommonDefinitionAnnotations(AnnotatedBeanDefinition abd, AnnotatedTypeMetadata metadata) {
 		AnnotationAttributes lazy = attributesFor(metadata, Lazy.class);
+
+		/**
+		 * 是否延迟加载
+		 */
 		if (lazy != null) {
 			abd.setLazyInit(lazy.getBoolean("value"));
 		}
@@ -246,6 +250,9 @@ public abstract class AnnotationConfigUtils {
 			}
 		}
 
+		/**
+		 * 是否是Primary
+		 */
 		if (metadata.isAnnotated(Primary.class.getName())) {
 			abd.setPrimary(true);
 		}
