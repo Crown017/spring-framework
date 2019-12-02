@@ -370,9 +370,9 @@ public class DispatcherServlet extends FrameworkServlet {
 	}
 
 	/**
-	 * Create a new {@code DispatcherServlet} with the given web application context. This
-	 * constructor is useful in Servlet 3.0+ environments where instance-based registration
-	 * of servlets is possible through the {@link ServletContext#addServlet} API.
+	 * 创建一个新的 {@code DispatcherServlet} 根据给定的web应用上下文.
+	 * 这个构造函数在servlet 3.0 + 被用来注册基于实例的servlet变得可能，通过{@link ServletContext#addServlet}
+	 *
 	 * <p>Using this constructor indicates that the following properties / init-params
 	 * will be ignored:
 	 * <ul>
@@ -495,18 +495,51 @@ public class DispatcherServlet extends FrameworkServlet {
 	}
 
 	/**
-	 * Initialize the strategy objects that this servlet uses.
+	 * 初始化此servlet使用的策略对象
 	 * <p>May be overridden in subclasses in order to initialize further strategy objects.
 	 */
 	protected void initStrategies(ApplicationContext context) {
+		/**
+		 * 处理文件上传
+		 */
 		initMultipartResolver(context);
+		/**
+		 * 国际化的区域解析
+		 */
 		initLocaleResolver(context);
+
+
 		initThemeResolver(context);
+		/**
+		 * 初始化URL路径映射
+		 */
 		initHandlerMappings(context);
+		/**
+		 * 初始化过滤器适配器
+		 */
 		initHandlerAdapters(context);
+		/**
+		 * 异常解析
+		 */
 		initHandlerExceptionResolvers(context);
+		/**
+		 * 请求视图转换
+		 */
 		initRequestToViewNameTranslator(context);
+		/**
+		 * 试图解析器
+		 */
 		initViewResolvers(context);
+
+		/**
+		 * FlashMap管理器
+		 *
+		 *
+		 *
+		 * 它提供了一种方法，用于一个请求存储打算再另一个请求中使用的属性
+		 *
+		 * 例如重定向的请求
+		 */
 		initFlashMapManager(context);
 	}
 
@@ -593,7 +626,7 @@ public class DispatcherServlet extends FrameworkServlet {
 		this.handlerMappings = null;
 
 		if (this.detectAllHandlerMappings) {
-			// Find all HandlerMappings in the ApplicationContext, including ancestor contexts.
+			//查找到所有的HandleMapping
 			Map<String, HandlerMapping> matchingBeans =
 					BeanFactoryUtils.beansOfTypeIncludingAncestors(context, HandlerMapping.class, true, false);
 			if (!matchingBeans.isEmpty()) {
@@ -986,12 +1019,11 @@ public class DispatcherServlet extends FrameworkServlet {
 	}
 
 	/**
-	 * Process the actual dispatching to the handler.
-	 * <p>The handler will be obtained by applying the servlet's HandlerMappings in order.
-	 * The HandlerAdapter will be obtained by querying the servlet's installed HandlerAdapters
-	 * to find the first that supports the handler class.
-	 * <p>All HTTP methods are handled by this method. It's up to HandlerAdapters or handlers
-	 * themselves to decide which methods are acceptable.
+	 * 把请求分配到处理器
+	 *
+	 * 将按照HandleMapping的顺序获取
+	 * HandlerAdapter 将会拿到第一个被注入的HandleAdapters。
+	 * 所有的Http 请求都将会经过这个方法 。由Handle适配器或者Handlers他们自己决定哪个方法是用来接受Http请求
 	 * @param request current HTTP request
 	 * @param response current HTTP response
 	 * @throws Exception in case of any kind of processing failure
@@ -1008,21 +1040,36 @@ public class DispatcherServlet extends FrameworkServlet {
 			Exception dispatchException = null;
 
 			try {
+				/**
+				 * 是否是文件上传的请求
+				 */
 				processedRequest = checkMultipart(request);
 				multipartRequestParsed = (processedRequest != request);
 
-				// Determine handler for the current request.
+				/**
+				 * 确定请求的处理器链
+				 *
+				 *
+				 * 这里是HandlerExecutionChain
+				 */
 				mappedHandler = getHandler(processedRequest);
 				if (mappedHandler == null) {
 					noHandlerFound(processedRequest, response);
 					return;
 				}
 
-				// Determine handler adapter for the current request.
+				/**
+				 * 确定是由哪个Handler适配器来执行
+				 */
 				HandlerAdapter ha = getHandlerAdapter(mappedHandler.getHandler());
 
 				// Process last-modified header, if supported by the handler.
 				String method = request.getMethod();
+
+
+				/**
+				 * 判断请求的方法
+				 */
 				boolean isGet = "GET".equals(method);
 				if (isGet || "HEAD".equals(method)) {
 					long lastModified = ha.getLastModified(request, mappedHandler.getHandler());
@@ -1031,18 +1078,29 @@ public class DispatcherServlet extends FrameworkServlet {
 					}
 				}
 
+				/**
+				 * 处理拦截器
+				 */
 				if (!mappedHandler.applyPreHandle(processedRequest, response)) {
 					return;
 				}
 
-				// Actually invoke the handler.
+				/**
+				 * 执行真正的方法
+				 */
 				mv = ha.handle(processedRequest, response, mappedHandler.getHandler());
+
+
 
 				if (asyncManager.isConcurrentHandlingStarted()) {
 					return;
 				}
 
 				applyDefaultViewName(processedRequest, mv);
+
+				/**
+				 * 执行Post拦截器的Post请求
+				 */
 				mappedHandler.applyPostHandle(processedRequest, response, mv);
 			}
 			catch (Exception ex) {

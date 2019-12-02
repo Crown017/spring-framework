@@ -21,8 +21,10 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.lang.Nullable;
 
 /**
- * Interface to be implemented by objects that define a mapping between
- * requests and handler objects.
+ *
+ * 一个接口用它的实现来定义请求跟处理对象的的映射关系
+ * 即就是一次Http请求所对应的处理的方法。
+ *
  *
  * <p>This class can be implemented by application developers, although this is not
  * necessary, as {@link org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping}
@@ -31,11 +33,15 @@ import org.springframework.lang.Nullable;
  * HandlerMapping bean is registered in the application context.
  *
  * <p>HandlerMapping implementations can support mapped interceptors but do not
- * have to. A handler will always be wrapped in a {@link HandlerExecutionChain}
- * instance, optionally accompanied by some {@link HandlerInterceptor} instances.
- * The DispatcherServlet will first call each HandlerInterceptor's
- * {@code preHandle} method in the given order, finally invoking the handler
- * itself if all {@code preHandle} methods have returned {@code true}.
+ * have to.
+ *
+ * 一个Handler总是被封装成一个HandlerExecutetionChain实例，也可能伴随一些HandlerInterceptor实例。
+ *
+ * DispatcherServlet 将会先执行每个HandlerInterceptor的preHandler，
+ * 然后等preHandler的所有方法都返回true的时候执行自己。
+ *
+ *
+ *
  *
  * <p>The ability to parameterize this mapping is a powerful and unusual
  * capability of this MVC framework. For example, it is possible to write

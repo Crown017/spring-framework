@@ -527,7 +527,9 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				// Allows post-processing of the bean factory in context subclasses.
 				postProcessBeanFactory(beanFactory);
 
-				//ComponentScan的执行.
+				/**
+				 * ComponentScan的执行.
+				 */
 				invokeBeanFactoryPostProcessors(beanFactory);
 
 				/**
@@ -849,8 +851,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	}
 
 	/**
-	 * Finish the initialization of this context's bean factory,
-	 * initializing all remaining singleton beans.
+	 * 初始化所有需要处理的单例Bean对象
 	 */
 	protected void finishBeanFactoryInitialization(ConfigurableListableBeanFactory beanFactory) {
 		// Initialize conversion service for this context.

@@ -303,13 +303,18 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 				String beanName = this.beanNameGenerator.generateBeanName(candidate, this.registry);
 
 				/**
-				 * 是不是Spring注解的Bean 不是的化为Bean设置默认值
+				 * 是不是Spring注解的Bean 不是的话为Bean设置默认值
 				 */
 				if (candidate instanceof AbstractBeanDefinition) {
 					postProcessBeanDefinition((AbstractBeanDefinition) candidate, beanName);
 				}
 
-
+				/**
+				 * 表示这个Bean是Sirng的注解Bean对象
+				 *
+				 * @lazy @Primary @DependsOn
+				 *
+				 */
 				if (candidate instanceof AnnotatedBeanDefinition) {
 					AnnotationConfigUtils.processCommonDefinitionAnnotations((AnnotatedBeanDefinition) candidate);
 				}
