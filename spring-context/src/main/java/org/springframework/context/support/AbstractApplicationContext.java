@@ -533,6 +533,9 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				invokeBeanFactoryPostProcessors(beanFactory);
 
 				/**
+				 * 注册处理器Bean
+				 *
+				 *
 				 * 比如用来实现@Autowired功能的AutowireAnnotationPostProcessor后置处理器
 				 *
 				 * 后置处理器
