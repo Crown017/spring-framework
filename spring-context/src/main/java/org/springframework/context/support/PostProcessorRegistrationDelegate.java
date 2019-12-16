@@ -91,8 +91,11 @@ final class PostProcessorRegistrationDelegate {
 				}
 			}
 			sortPostProcessors(currentRegistryProcessors, beanFactory);
+			//注册BeanFactory
 			registryProcessors.addAll(currentRegistryProcessors);
+			//执行工程的PostProcessors
 			invokeBeanDefinitionRegistryPostProcessors(currentRegistryProcessors, registry);
+			//清空注册的PostProcessor以便后面的processor添加进来
 			currentRegistryProcessors.clear();
 
 			// Next, invoke the BeanDefinitionRegistryPostProcessors that implement Ordered.
