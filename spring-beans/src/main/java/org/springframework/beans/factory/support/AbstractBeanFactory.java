@@ -263,8 +263,11 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 		// Eagerly check singleton cache for manually registered singletons.
 		/**
 		 * 从单例缓存中先找
+		 *
+		 * 是否已经被创建
 		 */
 		Object sharedInstance = getSingleton(beanName);
+		//单例得时候args == null
 		if (sharedInstance != null && args == null) {
 			if (logger.isTraceEnabled()) {
 				if (isSingletonCurrentlyInCreation(beanName)) {
@@ -279,9 +282,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			 *（为什么要再次获取呢，因为上面获取的sharedInstance不一定是完整的）
 			 */
 			bean = getObjectForBeanInstance(sharedInstance, name, beanName, null);
-		}
-
-		else {
+		} else {
 
 			/**
 			 * Spring 只解决了单例模式下的循环依赖
@@ -327,8 +328,9 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				checkMergedBeanDefinition(mbd, beanName, args);
 
 				// Guarantee initialization of beans that the current bean depends on.
+				//返回当前Bean所依赖得Bean
 				String[] dependsOn = mbd.getDependsOn();
-				//如果有依赖
+				//如果有依赖 如果有先创建依赖的Bean
 				if (dependsOn != null) {
 					for (String dep : dependsOn) {
 						//是否已经注册
@@ -339,7 +341,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 						//注册依赖的Bean
 						registerDependentBean(dep, beanName);
 						try {
-							//先生成以来的Bean
+							//先生成依赖的Bean
 							getBean(dep);
 						}
 						catch (NoSuchBeanDefinitionException ex) {
@@ -354,7 +356,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 					sharedInstance = getSingleton(beanName, () -> {
 						try {
 							/**
-							 * 创建Bean
+							 * 创建Bean >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 							 */
 							return createBean(beanName, mbd, args);
 						}

@@ -1,4 +1,4 @@
-package mtest;
+package mytest;
 
 import org.springframework.stereotype.Component;
 

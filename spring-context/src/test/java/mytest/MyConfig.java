@@ -1,9 +1,9 @@
-package mtest;
+package mytest;
 
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-@ComponentScan("mtest")
+@ComponentScan("mytest")
 @Configuration
 public class MyConfig {
 
