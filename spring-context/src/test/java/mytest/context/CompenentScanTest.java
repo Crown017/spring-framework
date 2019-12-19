@@ -1,4 +1,4 @@
-package mytest;
+package mytest.context;
 
 import org.junit.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;

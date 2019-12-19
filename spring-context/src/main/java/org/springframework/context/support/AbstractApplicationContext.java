@@ -540,6 +540,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				 *
 				 * 比如用来实现@Autowired功能的AutowireAnnotationPostProcessor后置处理器
 				 *
+				 * Aop的实现
+				 *
 				 * 后置处理器
 				 */
 				registerBeanPostProcessors(beanFactory);

@@ -282,6 +282,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			 *（为什么要再次获取呢，因为上面获取的sharedInstance不一定是完整的）
 			 */
 			bean = getObjectForBeanInstance(sharedInstance, name, beanName, null);
+		//缓存中找不到
 		} else {
 
 			/**
@@ -397,6 +398,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				}
 
 				else {
+					//创建指定作用域下的
 					String scopeName = mbd.getScope();
 					final Scope scope = this.scopes.get(scopeName);
 					if (scope == null) {
