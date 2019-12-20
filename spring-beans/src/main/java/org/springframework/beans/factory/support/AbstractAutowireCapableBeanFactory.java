@@ -568,7 +568,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			instanceWrapper = this.factoryBeanInstanceCache.remove(beanName);
 		}
 		if (instanceWrapper == null) {
-			//创建BeanWrapper >>>>>>>>>>>>>>>>
+			//《1》创建BeanWrapper >>>>>>>>>>>>>>>>
 			instanceWrapper = createBeanInstance(beanName, mbd, args);
 		}
 		//从BeanWrapper中获取Bean
@@ -600,12 +600,13 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		boolean earlySingletonExposure = (mbd.isSingleton()  //单例模式
 				&& this.allowCircularReferences      //允许循环依赖
 				&& isSingletonCurrentlyInCreation(beanName)); //是否被创建
+
 		if (earlySingletonExposure) {
 			if (logger.isTraceEnabled()) {
 				logger.trace("Eagerly caching bean '" + beanName +
 						"' to allow for resolving potential circular references");
 			}
-			//将提前创建的Bean放到单例工厂当中
+			//放到三级缓存当中
 			addSingletonFactory(beanName, () -> getEarlyBeanReference(beanName, mbd, bean));
 		}
 
@@ -615,7 +616,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			/**
 			 * 对Bean进行填充设置
 			 *
-			 *
+			 * 循环引用处理,Autowired的注入
 			 */
 			populateBean(beanName, mbd, instanceWrapper);
 			/**
@@ -1457,7 +1458,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			MutablePropertyValues newPvs = new MutablePropertyValues(pvs);
 			// Add property values based on autowire by name if applicable.
 			if (resolvedAutowireMode == AUTOWIRE_BY_NAME) {
-				//TODO 名称注入
+				//TODO 名称注入  循环依赖
 				autowireByName(beanName, mbd, bw, newPvs);
 			}
 			// Add property values based on autowire by type if applicable.

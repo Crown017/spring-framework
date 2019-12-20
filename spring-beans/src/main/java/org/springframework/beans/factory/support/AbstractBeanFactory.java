@@ -354,6 +354,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
 				// 如果是单例的Bean对象
 				if (mbd.isSingleton()) {
+					//创建完成之后放入一级缓存
 					sharedInstance = getSingleton(beanName, () -> {
 						try {
 							/**
@@ -370,9 +371,6 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 						}
 					});
 
-					/**
-					 * 实例化我们的Bean对象
-					 */
 					bean = getObjectForBeanInstance(sharedInstance, name, beanName, mbd);
 				}
 

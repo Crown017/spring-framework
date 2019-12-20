@@ -179,20 +179,21 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	 */
 	@Nullable
 	protected Object getSingleton(String beanName, boolean allowEarlyReference) {
-		//从单例缓存中获取
+		//从单例缓存（一级缓存）如果有就返回
 		Object singletonObject = this.singletonObjects.get(beanName);
 		//如果不存在并且该Bean正在创建
 		if (singletonObject == null && isSingletonCurrentlyInCreation(beanName)) {
 			synchronized (this.singletonObjects) {
-				//提前创建的Bean
+				//查找二级缓存
 				singletonObject = this.earlySingletonObjects.get(beanName);
 
+				//二级缓存找不到 并且是允许循环引用的
 				if (singletonObject == null && allowEarlyReference) {
-					//从缓存中获取 ObjectFactory
+					//ObjectFactory
 					ObjectFactory<?> singletonFactory = this.singletonFactories.get(beanName);
 					if (singletonFactory != null) {
 						singletonObject = singletonFactory.getObject();
-						//存入
+						//如果有存入到二级缓存当中。
 						this.earlySingletonObjects.put(beanName, singletonObject);
 						this.singletonFactories.remove(beanName);
 					}
@@ -241,7 +242,10 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 					this.suppressedExceptions = new LinkedHashSet<>();
 				}
 				try {
-					/** ？？？ */
+					/**
+					 * 如果在二级缓存中找到了 那就是新的单例对象
+					 *
+					 * */
 					singletonObject = singletonFactory.getObject();
 					newSingleton = true;
 				}
